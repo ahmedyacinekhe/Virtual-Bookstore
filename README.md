@@ -5,7 +5,6 @@ Virtual Bookstore is a virtual library management system that allows users to ma
 - 📖 Add a book  
 - 🗑️ Remove a book  
 - 🔎 Search for a specific book  
-- 📜 View borrowing history  
 - ⏳ Manage waiting lists for popular books  
 
 ## Installation & Setup  
