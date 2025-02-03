@@ -26,64 +26,84 @@ Etudiant* listeEtudiants = NULL;
 int compteurIdLivre = 1;
 int compteurIdEtudiant = 1;
 
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void attendreEntree() {
+    printf("\nAppuyez sur Entree pour revenir au menu...");
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    getchar();
+}
 
 Etudiant* trouverEtudiant(int id);
 void afficherLivres();
 
-
 void ajouterLivre() {
     Livre* nouveauLivre = (Livre*)malloc(sizeof(Livre));
     if (!nouveauLivre) {
-        printf("\nErreur d'allocation de mémoire.\n");
+        clearScreen();
+        printf("Erreur d'allocation de memoire.\n");
+        attendreEntree();
         return;
     }
 
     nouveauLivre->id = compteurIdLivre++;
-    printf("\nEntrez le titre du livre : ");
-    getchar();
+    
+    clearScreen();
+    printf("Entrez le titre du livre : ");
     fgets(nouveauLivre->titre, TAILLE_TITRE, stdin);
     nouveauLivre->titre[strcspn(nouveauLivre->titre, "\n")] = 0;
+    
+    clearScreen();
     printf("Entrez le nom de l'auteur : ");
     fgets(nouveauLivre->auteur, TAILLE_NOM, stdin);
     nouveauLivre->auteur[strcspn(nouveauLivre->auteur, "\n")] = 0;
+    
     nouveauLivre->disponible = 1;
     nouveauLivre->idEtudiant = 0;
     nouveauLivre->suivant = bibliotheque;
     bibliotheque = nouveauLivre;
 
-    printf("\nLivre ajouté avec succès !\n");
+    clearScreen();
+    printf("Livre ajoute avec succes !\n");
+    attendreEntree();
 }
 
 void afficherLivres() {
+    clearScreen();
     if (!bibliotheque) {
-        printf("\nAucun livre dans la bibliothèque.\n");
-        return;
-    }
-
-    printf("\nListe des livres dans la bibliothèque :\n");
-    Livre* courant = bibliotheque;
-    while (courant) {
-        printf("ID: %d, Titre: %s, Auteur: %s, Disponible: %s",
-               courant->id,
-               courant->titre,
-               courant->auteur,
-               courant->disponible ? "Oui" : "Non");
-
-
-        if (!courant->disponible) {
-            Etudiant* etudiant = trouverEtudiant(courant->idEtudiant);
-            if (etudiant) {
-                printf(", Emprunté par : ID: %d, Nom: %s, Prénom: %s",
-                       etudiant->id,
-                       etudiant->nom,
-                       etudiant->prenom);
-            } else {
-                printf(", Emprunté par un étudiant inconnu (ID: %d)", courant->idEtudiant);
+        printf("Aucun livre dans la bibliotheque.\n");
+    } else {
+        printf("Liste des livres dans la bibliotheque :\n");
+        Livre* courant = bibliotheque;
+        while (courant) {
+            printf("ID: %d, Titre: %s, Auteur: %s, Disponible: %s",
+                   courant->id,
+                   courant->titre,
+                   courant->auteur,
+                   courant->disponible ? "Oui" : "Non");
+            if (!courant->disponible) {
+                Etudiant* etudiant = trouverEtudiant(courant->idEtudiant);
+                if (etudiant) {
+                    printf(", Emprunte par : ID: %d, Nom: %s, Prenom: %s",
+                           etudiant->id,
+                           etudiant->nom,
+                           etudiant->prenom);
+                } else {
+                    printf(", Emprunte par un etudiant inconnu (ID: %d)", courant->idEtudiant);
+                }
             }
+            printf("\n");
+            courant = courant->suivant;
         }
-        printf("\n");
-        courant = courant->suivant;
     }
+    attendreEntree();
 }
 
 Etudiant* trouverEtudiant(int id) {
@@ -99,62 +119,84 @@ Etudiant* trouverEtudiant(int id) {
 
 void emprunterLivre() {
     int idLivre, idEtudiant;
-    printf("\nEntrez l'ID du livre à emprunter : ");
+    clearScreen();
+    printf("Entrez l'ID du livre a emprunter : ");
     scanf("%d", &idLivre);
+    while (getchar() != '\n');
 
     Livre* courantLivre = bibliotheque;
     while (courantLivre) {
         if (courantLivre->id == idLivre) {
             if (!courantLivre->disponible) {
-                printf("\nCe livre est déjà emprunté.\n");
+                clearScreen();
+                printf("Ce livre est deja emprunte.\n");
+                attendreEntree();
                 return;
             }
-            printf("\nEntrez l'ID de l'étudiant : ");
+            clearScreen();
+            printf("Entrez l'ID de l'etudiant : ");
             scanf("%d", &idEtudiant);
+            while (getchar() != '\n');
 
             if (!trouverEtudiant(idEtudiant)) {
-                printf("\nÉtudiant introuvable.\n");
+                clearScreen();
+                printf("Etudiant introuvable.\n");
+                attendreEntree();
                 return;
             }
 
             courantLivre->disponible = 0;
             courantLivre->idEtudiant = idEtudiant;
-            printf("\nVous avez emprunté le livre : %s\n", courantLivre->titre);
+            clearScreen();
+            printf("Vous avez emprunte le livre : %s\n", courantLivre->titre);
+            attendreEntree();
             return;
         }
         courantLivre = courantLivre->suivant;
     }
 
-    printf("\nID de livre invalide.\n");
+    clearScreen();
+    printf("ID de livre invalide.\n");
+    attendreEntree();
 }
 
 void retournerLivre() {
     int id;
-    printf("\nEntrez l'ID du livre à retourner : ");
+    clearScreen();
+    printf("Entrez l'ID du livre a retourner : ");
     scanf("%d", &id);
+    while (getchar() != '\n');
 
     Livre* courant = bibliotheque;
     while (courant) {
         if (courant->id == id) {
             if (courant->disponible) {
-                printf("\nCe livre est déjà disponible dans la bibliothèque.\n");
+                clearScreen();
+                printf("Ce livre est deja disponible dans la bibliotheque.\n");
+                attendreEntree();
                 return;
             }
             courant->disponible = 1;
             courant->idEtudiant = 0;
-            printf("\nVous avez retourné le livre : %s\n", courant->titre);
+            clearScreen();
+            printf("Vous avez retourne le livre : %s\n", courant->titre);
+            attendreEntree();
             return;
         }
         courant = courant->suivant;
     }
 
-    printf("\nID invalide.\n");
+    clearScreen();
+    printf("ID invalide.\n");
+    attendreEntree();
 }
 
 void supprimerLivre() {
     int id;
-    printf("\nEntrez l'ID du livre à supprimer : ");
+    clearScreen();
+    printf("Entrez l'ID du livre a supprimer : ");
     scanf("%d", &id);
+    while (getchar() != '\n');
 
     Livre* courant = bibliotheque;
     Livre* precedent = NULL;
@@ -167,52 +209,65 @@ void supprimerLivre() {
                 bibliotheque = courant->suivant;
             }
             free(courant);
-            printf("\nLe livre a été supprimé avec succès.\n");
+            clearScreen();
+            printf("Le livre a ete supprime avec succes.\n");
+            attendreEntree();
             return;
         }
         precedent = courant;
         courant = courant->suivant;
     }
 
-    printf("\nID invalide.\n");
+    clearScreen();
+    printf("ID invalide.\n");
+    attendreEntree();
 }
 
 void ajouterEtudiant() {
     Etudiant* nouvelEtudiant = (Etudiant*)malloc(sizeof(Etudiant));
     if (!nouvelEtudiant) {
-        printf("\nErreur d'allocation de mémoire.\n");
+        clearScreen();
+        printf("Erreur d'allocation de memoire.\n");
+        attendreEntree();
         return;
     }
 
     nouvelEtudiant->id = compteurIdEtudiant++;
-    printf("\nEntrez le nom de l'étudiant : ");
-    getchar();
+    
+    clearScreen();
+    printf("Entrez le nom de l'etudiant : ");
     fgets(nouvelEtudiant->nom, TAILLE_NOM, stdin);
     nouvelEtudiant->nom[strcspn(nouvelEtudiant->nom, "\n")] = 0;
-    printf("Entrez le prénom de l'étudiant : ");
+    
+    clearScreen();
+    printf("Entrez le prenom de l'etudiant : ");
     fgets(nouvelEtudiant->prenom, TAILLE_NOM, stdin);
     nouvelEtudiant->prenom[strcspn(nouvelEtudiant->prenom, "\n")] = 0;
+    
     nouvelEtudiant->suivant = listeEtudiants;
     listeEtudiants = nouvelEtudiant;
 
-    printf("\nÉtudiant ajouté avec succès !\n");
+    clearScreen();
+    printf("Etudiant ajoute avec succes !\n");
+    attendreEntree();
 }
 
 void afficherEtudiants() {
+    clearScreen();
     if (!listeEtudiants) {
-        printf("\nAucun étudiant enregistré.\n");
-        return;
+        printf("Aucun etudiant enregistre.\n");
+    } else {
+        printf("Liste des etudiants :\n");
+        Etudiant* courant = listeEtudiants;
+        while (courant) {
+            printf("ID: %d, Nom: %s, Prenom: %s\n",
+                   courant->id,
+                   courant->nom,
+                   courant->prenom);
+            courant = courant->suivant;
+        }
     }
-
-    printf("\nListe des étudiants :\n");
-    Etudiant* courant = listeEtudiants;
-    while (courant) {
-        printf("ID: %d, Nom: %s, Prénom: %s\n",
-               courant->id,
-               courant->nom,
-               courant->prenom);
-        courant = courant->suivant;
-    }
+    attendreEntree();
 }
 
 void rechercherEtudiant() {
@@ -220,51 +275,63 @@ void rechercherEtudiant() {
     char prenom[TAILLE_NOM];
     int trouve = 0;
 
-    printf("\nEntrez le nom de l'étudiant : ");
+    clearScreen();
+    printf("Entrez le nom de l'etudiant : ");
     scanf("%s", nom);
-    printf("Entrez le prénom de l'étudiant : ");
+    printf("Entrez le prenom de l'etudiant : ");
     scanf("%s", prenom);
+    while (getchar() != '\n');
 
     Etudiant* courant = listeEtudiants;
 
-    printf("\n=== Résultat de la recherche ===\n");
+    clearScreen();
+    printf("=== Resultat de la recherche ===\n");
     while (courant) {
         if (strcmp(courant->nom, nom) == 0 && strcmp(courant->prenom, prenom) == 0) {
-            printf("ID : %d, Nom : %s, Prénom : %s\n", courant->id, courant->nom, courant->prenom);
+            printf("ID : %d, Nom : %s, Prenom : %s\n", courant->id, courant->nom, courant->prenom);
             trouve = 1;
         }
         courant = courant->suivant;
     }
 
     if (!trouve) {
-        printf("Aucun étudiant trouvé avec le nom '%s' et le prénom '%s'.\n", nom, prenom);
+        printf("Aucun etudiant trouve avec le nom '%s' et le prenom '%s'.\n", nom, prenom);
     }
+    attendreEntree();
 }
 
 void afficherEtudiantParId() {
     int id;
-    printf("\nEntrez l'ID de l'étudiant : ");
+    clearScreen();
+    printf("Entrez l'ID de l'etudiant : ");
     scanf("%d", &id);
+    while (getchar() != '\n');
 
     Etudiant* etudiant = trouverEtudiant(id);
 
+    clearScreen();
     if (etudiant) {
-        printf("\n=== Résultat de la recherche ===\n");
-        printf("ID : %d, Nom : %s, Prénom : %s\n", etudiant->id, etudiant->nom, etudiant->prenom);
+        printf("=== Resultat de la recherche ===\n");
+        printf("ID : %d, Nom : %s, Prenom : %s\n", etudiant->id, etudiant->nom, etudiant->prenom);
     } else {
-        printf("\nAucun étudiant trouvé avec l'ID %d.\n", id);
+        printf("Aucun etudiant trouve avec l'ID %d.\n", id);
     }
+    attendreEntree();
 }
 
 void supprimerEtudiant() {
     int id;
-    printf("\nEntrez l'ID de l'étudiant à supprimer : ");
+    clearScreen();
+    printf("Entrez l'ID de l'etudiant a supprimer : ");
     scanf("%d", &id);
+    while (getchar() != '\n');
 
     Livre* courantLivre = bibliotheque;
     while (courantLivre) {
         if (courantLivre->idEtudiant == id) {
-            printf("\nImpossible de supprimer cet étudiant. Il a emprunté un ou plusieurs livres.\n");
+            clearScreen();
+            printf("Impossible de supprimer cet etudiant. Il a emprunte un ou plusieurs livres.\n");
+            attendreEntree();
             return;
         }
         courantLivre = courantLivre->suivant;
@@ -281,14 +348,18 @@ void supprimerEtudiant() {
                 listeEtudiants = courant->suivant;
             }
             free(courant);
-            printf("\nL'étudiant a été supprimé avec succès.\n");
+            clearScreen();
+            printf("L'etudiant a ete supprime avec succes.\n");
+            attendreEntree();
             return;
         }
         precedent = courant;
         courant = courant->suivant;
     }
 
-    printf("\nID invalide.\n");
+    clearScreen();
+    printf("ID invalide.\n");
+    attendreEntree();
 }
 
 void libererMemoire() {
@@ -308,17 +379,17 @@ void libererMemoire() {
 }
 
 void menu() {
-    printf("\n=== Menu Bibliothèque Virtuelle ===\n");
+    printf("\n=== Menu Bibliotheque Virtuelle ===\n");
     printf("1. Ajouter un livre\n");
     printf("2. Afficher les livres\n");
     printf("3. Emprunter un livre\n");
     printf("4. Retourner un livre\n");
     printf("5. Supprimer un livre\n");
-    printf("6. Ajouter un étudiant\n");
-    printf("7. Afficher les étudiants\n");
-    printf("8. Supprimer un étudiant\n");
-    printf("9. Rechercher un étudiant par nom et prénom\n");
-    printf("10. Rechercher un étudiant par ID\n");
+    printf("6. Ajouter un etudiant\n");
+    printf("7. Afficher les etudiants\n");
+    printf("8. Supprimer un etudiant\n");
+    printf("9. Rechercher un etudiant par nom et prenom\n");
+    printf("10. Rechercher un etudiant par ID\n");
     printf("0. Quitter\n");
     printf("===================================\n");
     printf("Entrez votre choix : ");
@@ -328,8 +399,16 @@ int main() {
     int choix;
 
     do {
+        clearScreen();
         menu();
-        scanf("%d", &choix);
+
+        if (scanf("%d", &choix) != 1) {
+            while (getchar() != '\n');
+            continue;
+        }
+        while (getchar() != '\n');
+
+        clearScreen();
         switch (choix) {
             case 1:
                 ajouterLivre();
@@ -365,7 +444,9 @@ int main() {
                 printf("\nAu revoir !\n");
                 break;
             default:
-                printf("\nChoix invalide. Veuillez réessayer.\n");
+                clearScreen();
+                printf("Choix invalide. Veuillez reessayer.\n");
+                attendreEntree();
         }
     } while (choix != 0);
 
