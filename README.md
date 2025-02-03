@@ -26,8 +26,7 @@ Provide usage instructions and examples of how users can interact with your syst
 - Run the application and follow the on-screen instructions to:  
   - Add or remove books  
   - Search for books  
-  - Borrow and return books  
-  - View borrowing history  
+  - Borrow and return books   
   - Manage waiting lists  
 
 Example command:  
