@@ -38,8 +38,17 @@ Student* findStudent(int id);
 //This is a function that displays the list of the books in the library,  here's its prototype:
 void displayBooks();
 
+// Clears the screen (cross-platform)
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
 //This is a function that allows the user to add a new book,  here's its definition:
 void addBook() {
+    clearScreen();
     int quantity;
     char newBookTitle[NAME_LENGTH];
     char newBookAuthor[NAME_LENGTH];
@@ -98,7 +107,7 @@ void displayBooks() {
         printf("\nThe library is empty!\n");
         return;
     }
-
+clearScreen(); // Clears before displaying, so output stays visible
     printf("\nThe list of books in the library:\n");
 
     //Walking through the library books:
@@ -127,6 +136,9 @@ void displayBooks() {
         printf("\n");
         current = current->next;
     }
+    printf("\nPress Enter to return to the menu...");
+    getchar();
+    getchar(); // Pause before clearing the screen again
 }
 
 //This is a function that searches a student using its ID number, it returns the corresponding list element, here's its definition:
@@ -143,6 +155,7 @@ Student* findStudent(int id) {
 
 //This is a function that allows to borrow a book, here's its definition:
 void borrowBook() {
+    clearScreen();
     int bookId, studentId;
     printf("\nEnter the ID number of the book that you want to borrow: ");
     scanf("%d", &bookId);
@@ -178,6 +191,7 @@ void borrowBook() {
 
 //This is a function that allows to return a borrowed book to the library, here's its definition:
 void returnBook() {
+    clearScreen();
     int id;
     printf("\nEnter the ID of the book that you want to return: ");
     scanf("%d", &id);
@@ -203,6 +217,7 @@ void returnBook() {
 
 //This function is meant to delete an existing book from the library, here's its definition:
 void deleteBook() {
+    clearScreen();
     int id;
     printf("\nEnter the ID number of the book that you want to delete: ");
     scanf("%d", &id);
@@ -230,6 +245,7 @@ void deleteBook() {
 
 //This is a function to allow adding a student to the students' list, here's its definition:
 void addStudent() {
+    clearScreen();
     Student* newStudent = (Student*)malloc(sizeof(Student));
     if (!newStudent) {
         printf("\nMemory allocation failed!\n");
@@ -256,6 +272,7 @@ void displayStudents() {
         printf("\nNo student is subscribed!\n");
         return;
     }
+    clearScreen(); // Clears before displaying, so output stays visible
 
     printf("\nThe list of subscribed students:\n");
     Student* current = studentsList;
@@ -266,10 +283,14 @@ void displayStudents() {
                current->name);
         current = current->next;
     }
+    printf("\nPress Enter to return to the menu...");
+    getchar();
+    getchar(); // Pause before clearing the screen again
 }
 
 //This function searches a student's full name in the students' list, here's its definition:
 void searchStudent() {
+    clearScreen();  // Added screen clear
     char familyName[NAME_LENGTH];
     char name[NAME_LENGTH];
     int found = 0;
@@ -293,10 +314,15 @@ void searchStudent() {
     if (!found) {
         printf("The student with the family name: '%s' and the name '%s' is not found!\n", familyName, name);
     }
+    // Pause before returning to the menu
+    printf("\nPress Enter to return to the menu...");
+    getchar();
+    getchar();
 }
 
 //This function displays the students' info based on a given ID number, here's its definition:
 void displayStudentById() {
+    clearScreen();  // Added screen clear
     int id;
     printf("\nEnter the student's ID: ");
     scanf("%d", &id);
@@ -309,10 +335,15 @@ void displayStudentById() {
     } else {
         printf("\nThe student with the ID number: %d, is not found!\n", id);
     }
+    // Pause before returning to the menu
+    printf("\nPress Enter to return to the menu...");
+    getchar();
+    getchar();
 }
 
 //To delete a student from the students' list based on a given ID number, we use the following function:
 void deleteStudent() {
+    clearScreen();  // Added screen clear
     int id;
     printf("\nEnter the ID number of the student that you want to delete: ");
     scanf("%d", &id);
@@ -385,6 +416,7 @@ int main() {
     int choice;
 
     do {
+        clearScreen();  // Added screen clear
         menu();
 
     while (scanf("%d", &choice) != 1) { // If input is not an integer
@@ -423,9 +455,11 @@ int main() {
                 displayStudentById();
                 break;
             case 0:
+                clearScreen();
                 printf("\nGoodbye!\n");
                 break;
             default:
+                clearScreen();  // Added screen clear
                 printf("\nCHOICE ERROR: THERE'S NO SUCH A CHOICE NUMBER, PLEASE TRY AGAIN!\n");
         }
     } while (choice != 0);
