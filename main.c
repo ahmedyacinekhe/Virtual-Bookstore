@@ -146,11 +146,14 @@ clearScreen(); // Clears before displaying, so output stays visible
 
 //This function searches a book's title in the books' list, here's its definition:
 void searchBook() {
+    clearScreen(); // Clears before displaying, so output stays visible
     char title[TITLE_LENGTH];
     int found = 0;
 
     printf("Enter the title of the book: ");
-    scanf("%s", title);
+     getchar();  // Consume any leftover newline
+    fgets(title, TITLE_LENGTH, stdin);
+    title[strcspn(title, "\n")] = 0;  // Remove trailing newline
 
     Book* current = library;
 
@@ -166,15 +169,20 @@ void searchBook() {
     if (!found) {
         printf("The book with the title: '%s'  is not found!\n", title);
     }
+     printf("\nPress Enter to continue...");
+    getchar();  // Wait for user input before refreshing to menu
 }
 
 //This function searches a book's author in the books' list, here's its definition:
 void searchBookByAuthor() {
+    clearScreen(); // Clears before displaying, so output stays visible
     char author[NAME_LENGTH];
     int found = 0;
 
     printf("Enter the author of the book: ");
-    scanf("%s", author);
+    getchar();  // Consume any leftover newline
+   fgets(author, NAME_LENGTH, stdin);
+    author[strcspn(author, "\n")] = 0;  // Remove trailing newline
 
     Book* current = library;
 
@@ -190,14 +198,22 @@ void searchBookByAuthor() {
     if (!found) {
         printf("The book written by: '%s'  is not found!\n", author);
     }
+    printf("\nPress Enter to continue...");
+    getchar();  // Wait for user input before refreshing to menu
 }
 
 //This function displays the book's info based on a given ID number, here's its definition:
 void displayBooksById() {
+    clearScreen(); // Clears before displaying, so output stays visible
     int id;
     printf("\nEnter the book's ID: ");
-    scanf("%d", &id);
-
+    // Clear input buffer before reading integer
+    while (getchar() != '\n');  
+    if (scanf("%d", &id) != 1) {
+        printf("\nInvalid input! Please enter a valid number.\n");
+        while (getchar() != '\n'); // Clear input buffer
+        return;
+    }
     Book* Book = findBook(id);
 
     if (Book) {
@@ -206,6 +222,9 @@ void displayBooksById() {
     } else {
         printf("\nThe book with the ID number: %d, is not found!\n", id);
     }
+    printf("\nPress Enter to continue...");
+    getchar();
+    getchar();  // Wait for user input before refreshing to menu
 }
 
 
