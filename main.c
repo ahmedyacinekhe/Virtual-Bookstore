@@ -35,6 +35,9 @@ int studentIdCounter = 1;
 //This is a function that searches a student using its ID number, it returns the corresponding list element, here's its prototype:
 Student* findStudent(int id);
 
+//This is a function that searches a book using its ID number, it returns the corresponding list element, here's its prototype:
+Book* findBook(int id);
+
 //This is a function that displays the list of the books in the library,  here's its prototype:
 void displayBooks();
 
@@ -139,6 +142,83 @@ clearScreen(); // Clears before displaying, so output stays visible
     printf("\nPress Enter to return to the menu...");
     getchar();
     getchar(); // Pause before clearing the screen again
+}
+
+//This function searches a book's title in the books' list, here's its definition:
+void searchBook() {
+    char title[TITLE_LENGTH];
+    int found = 0;
+
+    printf("Enter the title of the book: ");
+    scanf("%s", title);
+
+    Book* current = library;
+
+    printf("\n=== RESULT ===\n");
+    while (current) {
+        if (strcmp(current->title, title) == 0 ) {
+            printf("ID : %d, Title: %s, Author: %s\n", current->id, current->title, current->author);
+            found = 1;
+        }
+        current = current->next;
+    }
+
+    if (!found) {
+        printf("The book with the title: '%s'  is not found!\n", title);
+    }
+}
+
+//This function searches a book's author in the books' list, here's its definition:
+void searchBookByAuthor() {
+    char author[NAME_LENGTH];
+    int found = 0;
+
+    printf("Enter the author of the book: ");
+    scanf("%s", author);
+
+    Book* current = library;
+
+    printf("\n=== RESULT ===\n");
+    while (current) {
+        if (strcmp(current->author, author) == 0 ) {
+            printf("ID : %d, Title: %s, Author: %s\n", current->id, current->title, current->author);
+            found = 1;
+        }
+        current = current->next;
+    }
+
+    if (!found) {
+        printf("The book written by: '%s'  is not found!\n", author);
+    }
+}
+
+//This function displays the book's info based on a given ID number, here's its definition:
+void displayBooksById() {
+    int id;
+    printf("\nEnter the book's ID: ");
+    scanf("%d", &id);
+
+    Book* Book = findBook(id);
+
+    if (Book) {
+        printf("\n=== RESULT ===\n");
+        printf("ID: %d, Title: %s, Written by: %s\n", Book->id, Book->title, Book->author);
+    } else {
+        printf("\nThe book with the ID number: %d, is not found!\n", id);
+    }
+}
+
+
+//This is a function that searches a book using its ID number, it returns the corresponding list element, here's its definition:
+Book* findBook(int id) {
+    Book* current = library;
+    while (current) {
+        if (current->id == id) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
 }
 
 //This is a function that searches a student using its ID number, it returns the corresponding list element, here's its definition:
@@ -407,7 +487,10 @@ void menu() {
     printf("8. delete a student\n");
     printf("9. Search a student by his family name and name\n");
     printf("10. Search a student by his ID number\n");
-    printf("0. Quit\n");
+    printf("11. Search a Book by its title\n");
+    printf("12. Search a book by its author name\n");
+    printf("13. Search a book by its ID number\n");
+    printf("0. Exit\n");
     printf("===================================\n");
     printf("Enter your choice number: ");
 }
@@ -453,6 +536,15 @@ int main() {
                 break;
             case 10:
                 displayStudentById();
+                break;
+            case 11:
+                searchBook();
+                break;
+            case 12:
+                searchBookByAuthor();
+                break;
+            case 13:
+                displayBooksById();
                 break;
             case 0:
                 clearScreen();
