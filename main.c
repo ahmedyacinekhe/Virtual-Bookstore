@@ -283,7 +283,7 @@ void addStudent() {
 
 //This function is meant to display the list of all the subscribed students:
 void displayStudents() {
-    clearScreen();  // Added screen clear
+    
     if (!studentsList) {
         printf("\nNo student is subscribed!\n");
         return;
