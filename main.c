@@ -386,7 +386,6 @@ int main() {
 
     do {
         menu();
-        printf("Enter an integer: ");
 
     while (scanf("%d", &choice) != 1) { // If input is not an integer
         printf("Invalid input! Please enter an integer: ");
