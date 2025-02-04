@@ -45,33 +45,56 @@ Student* findStudent(int id);
 void displayBooks();
 
 void addBook() {
-    Book* newBook = (Book*)malloc(sizeof(Book));
-    if (!newBook) {
-        clearScreen();
-        printf("Memory allocation failed!\n");
-        waitForEnter();
-        return;
+        int quantity;
+    char newBookTitle[NAME_LENGTH];
+    char newBookAuthor[NAME_LENGTH];
+
+    //Reading the new book title:
+    printf("\nEnter the book title: ");
+    getchar();
+    fgets(newBookTitle, TITLE_LENGTH, stdin);
+    newBookTitle[strcspn(newBookTitle, "\n")] = 0;
+
+    //Reading the author's name of the new book:
+    printf("Enter the author's name: ");
+    fgets(newBookAuthor, NAME_LENGTH, stdin);
+    newBookAuthor[strcspn(newBookAuthor, "\n")] = 0;
+
+    //Reading the quantity that the user needs to add
+    printf("\nEnter the number of books that you want to add with the same title: ");
+    scanf("%d", &quantity);
+
+    for(int i=1; i<=quantity; i++){
+        Book* newBook = (Book*)malloc(sizeof(Book));
+
+        //Checking for allocation failure:
+        if (!newBook) {
+            printf("\nMemory allocation failed!\n");
+            return;
+        }
+
+        //Setting the book title:
+        strcpy(newBook->title, newBookTitle);
+
+        //Setting the book author's name:
+        strcpy(newBook->author, newBookAuthor);
+
+        //Setting the availability:
+        newBook->available = 1;
+
+        //Resetting the student ID to 0:
+        newBook->studentId = 0;
+
+        //Assigning an ID number to the new book:
+        newBook->id = bookIdCounter++;
+        //Connecting the new book to the library list, making it the head of the library list:
+        newBook->next = library;
+        library = newBook;
     }
 
-    newBook->id = bookIdCounter++;
-    
     clearScreen();
-    printf("Enter book title: ");
-    fgets(newBook->title, TITLE_LENGTH, stdin);
-    newBook->title[strcspn(newBook->title, "\n")] = 0;
-    
-    clearScreen();
-    printf("Enter author name: ");
-    fgets(newBook->author, NAME_LENGTH, stdin);
-    newBook->author[strcspn(newBook->author, "\n")] = 0;
-    
-    newBook->available = 1;
-    newBook->studentId = 0;
-    newBook->next = library;
-    library = newBook;
-
-    clearScreen();
-    printf("Book added successfully!\n");
+    //Confirmation message for the user:
+    printf("\n%d books has been added successfully!\n",quantity);
     waitForEnter();
 }
 
